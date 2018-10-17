@@ -347,7 +347,7 @@ video {
 
 .vd-vote-action {
   text-align: center;
-  margin-top: 0.46667rem;
+  padding: 0.46667rem 0;
 }
 
 .vd-vote-action .vote-button {

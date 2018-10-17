@@ -92,7 +92,6 @@
       })
     },
     init: function () {
-      setScrollTop(0)
       this.page.show().find('.page-hint').on('click', this._scrollToPage2)
     },
     dispose: function () {
@@ -191,6 +190,7 @@
       default:
         //
     }
+    setScrollTop(0)
   }
 
   function main() {
