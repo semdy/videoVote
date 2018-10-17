@@ -39,6 +39,7 @@ video {
 .index-page {
   display: none;
   height: 100%;
+  margin-bottom: 0.4rem;
   background: url("../assets/images/index-footer.png") no-repeat;
   background-size: 100% auto;
   background-position: 50% 100%;
@@ -63,12 +64,12 @@ video {
 }
 
 .index-hero {
-  width: 7.58667rem;
+  width: 5.33333rem;
   margin: 0 auto;
 }
 
 .index-hero-sub {
-  width: 4.62667rem;
+  width: 4rem;
   margin: 0.4rem auto 0.26667rem;
   border-bottom: 0.05333rem solid #888a8c;
 }
@@ -88,7 +89,6 @@ video {
 
 .page-list-wrap {
   display: none;
-  padding-top: 0.4rem;
   height: 100%;
 }
 

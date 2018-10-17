@@ -65,6 +65,10 @@
     execRun()
   }
 
+  function setScrollTop(top) {
+    document.body.scrollTop = document.documentElement.scrollTop = top
+  }
+
   function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     var r = window.location.search.substr(1).match(reg);
@@ -83,11 +87,12 @@
   var pageIndex = {
     page: $('#video-index'),
     _scrollToPage2: function () {
-      tween(window.pageYOffset, window.innerHeight, 700, function (curValue) {
-        document.body.scrollTop = document.documentElement.scrollTop = curValue
+      tween(window.pageYOffset, window.innerHeight + 17, 700, function (v) {
+        setScrollTop(v)
       })
     },
     init: function () {
+      setScrollTop(0)
       this.page.show().find('.page-hint').on('click', this._scrollToPage2)
     },
     dispose: function () {
@@ -173,15 +178,15 @@
       return
     }
     switch (hash) {
-      case '/detail':
-        pageDetail.init()
-        pageIndex.dispose()
-        pageList.dispose()
-        break
       case '/index':
         pageIndex.init()
         pageList.init()
         pageDetail.dispose()
+        break
+      case '/detail':
+        pageDetail.init()
+        pageIndex.dispose()
+        pageList.dispose()
         break
       default:
         //

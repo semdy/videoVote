@@ -39,6 +39,7 @@ video {
 .index-page {
   display: none;
   height: 100%;
+  margin-bottom: 30px;
   @include bg(index-footer);
   background-position: 50% 100%;
 }
@@ -57,12 +58,12 @@ video {
 }
 
 .index-hero {
-  width: 569px;
+  width: 400px;
   margin: 0 auto;
 }
 
 .index-hero-sub {
-  width: 347px;
+  width: 300px;
   margin: 30px auto 20px;
   border-bottom: 4px solid #888a8c;
 }
@@ -83,7 +84,6 @@ video {
 
 .page-list-wrap {
   display: none;
-  padding-top: 30px;
   height: 100%;
 }
 
