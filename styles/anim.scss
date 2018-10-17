@@ -1,0 +1,132 @@
+@import "_mixin";
+
+@include keyframes(bgmove) {
+  from {
+    @include transform(translate3d(0, 0, 0));
+  }
+  to {
+    @include transform(translate3d(-100%, 0, 0));
+  }
+}
+
+@include keyframes(meteor1) {
+  from {
+    @include transform(translate3d(px2rem(1500), px2rem(-700), 0));
+  }
+  to {
+    @include transform(translate3d(px2rem(-1200), px2rem(500), 0));
+  }
+}
+
+@include keyframes(meteor2) {
+  from {
+    @include transform(translate3d(px2rem(700), px2rem(-200), 0));
+  }
+  to {
+    @include transform(translate3d(px2rem(-2000), px2rem(450), 0));
+  }
+}
+
+@include keyframes(meteor3) {
+  from {
+    @include transform(translate3d(px2rem(2000), px2rem(-300), 0));
+  }
+  to {
+    @include transform(translate3d(px2rem(-1200), px2rem(450), 0));
+  }
+}
+
+
+@include keyframes(arrow-down) {
+  0% {
+    opacity: 1;
+    @include transform(translate3d(0, -100%, 0));
+  }
+  60% {
+    opacity: 1;
+    @include transform(translate3d(0, 100%, 0));
+  }
+  100% {
+    opacity: 0;
+    @include transform(translate3d(0, 100%, 0));
+  }
+}
+
+@include keyframes(arrow-up) {
+  0% {
+    opacity: 1;
+    @include transform(rotate(180deg) translate3d(0, -100%, 0));
+  }
+  60% {
+    opacity: 1;
+    @include transform(rotate(180deg) translate3d(0, 100%, 0));
+  }
+  100% {
+    opacity: 0;
+    @include transform(rotate(180deg) translate3d(0, 100%, 0));
+  }
+}
+
+@include keyframes(updown) {
+  0% {
+    @include transform(translate3d(0, -5%, 0));
+  }
+  100% {
+    @include transform(translate3d(0, 5%, 0));
+  }
+}
+
+@include keyframes(slideUp) {
+  0% {
+    opacity: 0;
+    @include transform(translate3d(0, 100%, 0));
+  }
+  100% {
+    opacity: 1;
+    @include transform(translate3d(0, 0, 0));
+  }
+}
+
+@include keyframes(slideDown) {
+  0% {
+    opacity: 0;
+    @include transform(translate3d(0, -100%, 0));
+  }
+  100% {
+    opacity: 1;
+    @include transform(translate3d(0, 0, 0));
+  }
+}
+
+@include keyframes(spin) {
+  0% {
+    @include transform(rotate(0));
+  }
+  100% {
+    @include transform(rotate(360deg));
+  }
+}
+
+.updown {
+  @include animation(updown 2s linear both infinite alternate);
+}
+
+.slideUp {
+  @include animation-name(slideUp);
+}
+
+.slideDown {
+  @include animation-name(slideDown);
+}
+
+.arrow-down {
+  @include animation(arrow-down 2s both infinite)
+}
+
+.arrow-up {
+  @include animation(arrow-up 2s both infinite)
+}
+
+.spin {
+  @include animation(spin 2s infinite)
+}
