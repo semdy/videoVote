@@ -38,7 +38,7 @@ video {
 
 .index-page {
   display: none;
-  height: 100%;
+  min-height: 100%;
   margin-bottom: 30px;
   @include bg(index-footer);
   background-position: 50% 100%;
@@ -84,7 +84,7 @@ video {
 
 .page-list-wrap {
   display: none;
-  height: 100%;
+  min-height: 100%;
 }
 
 .list-tabs {
@@ -229,7 +229,7 @@ video {
 .page-video-detail {
   display: none;
   background-color: #fff;
-  height: 100%;
+  min-height: 100%;
 }
 
 .video-container {
