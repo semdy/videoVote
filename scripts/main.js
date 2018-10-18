@@ -84,6 +84,42 @@
     })
   }
 
+  function buildVideoList(itemTpl, data) {
+    if (!Array.isArray(data)) return
+    var ret = ''
+    data.forEach(function (item, i) {
+      ret += tpl(itemTpl, $.extend({}, item, {$index: i + 1, lightCls: item.votes > 0 ? 'light' : ''}))
+    })
+    return ret
+  }
+
+  function buildBillList(itemTpl, data) {
+    if (!Array.isArray(data)) return
+    var ret = ''
+    data.forEach(function (item, i) {
+      ret += tpl(itemTpl, $.extend({}, item, {$index: i + 1, topCls: i < 3 ? 'top' : ''}))
+    })
+    return ret
+  }
+
+  var serverUrl = 'http://mnvideo.kurite.com/api'
+  var openId = getQueryString('openId')
+  var docTitle = document.title
+
+  if (!openId) {
+    alert('url参数缺少openId')
+  }
+
+  var userVote = function (vid, callback) {
+    $.post(serverUrl + '/user/vote', {openId: openId, videoId: vid}).then(function (res) {
+      if (res.success) {
+        callback(res)
+      } else {
+        alert(res.message)
+      }
+    }, 'json')
+  }
+
   var pageIndex = {
     page: $('#video-index'),
     _scrollToPage2: function () {
@@ -92,6 +128,7 @@
       })
     },
     init: function () {
+      document.title = docTitle
       this.page.show().find('.page-hint').on('click', this._scrollToPage2)
     },
     dispose: function () {
@@ -105,8 +142,9 @@
       this.page.show()
         .on('click', '.list-tab-item', this._tabHandle)
         .on('click', '.video-cover', this._itemClickHandle)
+        .on('click', '.video-bill-item', this._itemClickHandle)
         .on('click', '.video-vote-star', this._handleStar)
-      this.page.find('.vote-videos').one('shown', this.showVotes)
+      this.page.find('.vote-videos').one('shown', this.showVideos)
       this.page.find('.videos-bill').one('shown', this.showBill)
       this.page.find('.list-tab-item').first().trigger('click')
     },
@@ -116,14 +154,42 @@
         .find('.vote-videos').off('shown', this.showVotes)
         .find('.videos-bill').off('shown', this.showBill)
     },
-    showVotes: function () {
-      console.log('vote')
+    showVideos: function () {
+      var videoItemTpl = '<div class="video-item">' +
+        '      <div class="video-cover" data-vid="{{id}}">' +
+        '        <img src="" />' +
+        '      </div>' +
+        '      <div class="video-footer">' +
+        '        <span class="video-name">{{title}}</span>' +
+        '        <span class="video-vote-star {{lightCls}}" data-vid="{{id}}">{{votes}}</span>' +
+        '      </div>' +
+        '    </div>'
+      $.getJSON(serverUrl + '/video/videoList').then(function (res) {
+         if (res.success) {
+           var videoList = buildVideoList(videoItemTpl, res.data)
+           $('#video-list').find('.vote-videos').html(videoList)
+         } else {
+           alert(res.message)
+         }
+      })
     },
     showBill: function () {
-      console.log('bill')
-    },
-    getData: function () {
-
+      var billItemTpl = '<div class="video-bill-item {{topCls}}" data-vid="{{id}}">' +
+        '      <div class="video-bill-img">' +
+        '        <img src="" />' +
+        '      </div>' +
+        '      <div class="video-bill-name">{{title}}</div>' +
+        '      <div class="video-bill-count"><em>{{votes}}</em>票</div>' +
+        '      <div class="video-bill-order">{{$index}}</div>' +
+        '    </div>'
+      $.getJSON(serverUrl + '/video/ranKing').then(function (res) {
+        if (res.success) {
+          var billList = buildBillList(billItemTpl, res.data)
+          $('#video-list').find('.videos-bill').html(billList)
+        } else {
+          alert(res.message)
+        }
+      })
     },
     _tabHandle: function () {
       $(this).addClass('current').siblings().removeClass('current')
@@ -132,30 +198,95 @@
       curPane.show().siblings('.list-pane').hide()
       curPane.trigger('shown')
     },
-    _itemClickHandle: function () {
-      location.hash = '#/detail'
+    _itemClickHandle: function (e) {
+      var vid = e.currentTarget.dataset.vid
+      if (vid) {
+        location.hash = '#/detail/' + vid
+      }
     },
-    _handleStar: function () {
-
+    _handleStar: function (e) {
+      var target = e.currentTarget
+      var vid = target.dataset.vid
+      if (vid) {
+        userVote(vid, function () {
+          $(target).addClass('light').text(+$(target).text() + 1)
+        })
+      }
     },
   }
 
   var pageDetail = {
     page: $('#video-detail'),
-    video: $('#video').get(0),
-    init: function () {
+    video: $('#video'),
+    init: function (vid) {
       var self = this
       this.page.show()
-      this.showDetail()
-      this.page.find('#vplay').show().on('click', function () {
+      this.showDetail(vid)
+      /*this.page.find('#vplay').show().on('click', function () {
         $(this).hide()
         self.video.play()
+      })*/
+      this.page.on('click', '.vote-button', function (e) {
+        var vid = e.currentTarget.dataset.vid
+        if (vid) {
+          userVote(vid, function (res) {
+            self.showModal(res.data)
+          })
+        }
       })
     },
-    showDetail: function () {
+    showDetail: function (vid) {
+      if (!vid) {
+        return alert('缺少视频ID参数')
+      }
+      var self = this
+      var detailTpl = '<div class="video-container">' +
+        /*'      <video id="video" src="{{href}}" x5-video-player-type="h5" x5-video-player-fullscreen="true" webkit-playsinline="true" x-webkit-airplay="true" playsinline="true"></video>' +*/
+        '<iframe id="video" frameborder="0" src="{{href}}" allowFullScreen="true"></iframe>' +
+        '      <span id="vplay" class="video-play"></span>' +
+        '    </div>' +
+        '    <div class="video-vote-info">' +
+        '      <div class="video-vote-summary">' +
+        '        <span class="vd-label">累计票数</span>' +
+        '        <span class="vd-count">{{votes}}</span>' +
+        '      </div>' +
+        '      <div class="vd-vote-users">' +
+        '      {{userList}}'+
+        '      </div>' +
+        '    </div>' +
+        '    <div class="video-summary-panel">' +
+        '      <h4>视频介绍</h4>' +
+        '      <div class="video-summary-desc">' +
+        '        <p>{{detail}}</p>' +
+        '      </div>' +
+        '    </div>' +
+        '<div class="vd-vote-action">' +
+        '    <button class="vote-button {{disabledCls}}" data-vid="{{id}}">投票</button>' +
+        '  </div>'
+      var userItemTpl =  '<div class="vd-vote-item">' +
+        '          <div class="vd-vote-user">' +
+        '            <img src="{{headImg}}" class="vote-avatar" alt="{{name}}">' +
+        '            <span>{{name}}</span>' +
+        '          </div>' +
+        '          <div class="vd-vote-trend">+1</div>' +
+        '        </div>'
 
+      $.getJSON(serverUrl + '/video/videoDetail', {videoId: vid}).then(function (res) {
+        if (res.success) {
+          var userList = ''
+          document.title = res.data.title
+          res.data.voteList.forEach(function (item) {
+            userList += tpl(userItemTpl, item)
+          })
+          var detail = tpl(detailTpl, $.extend(res.data, {userList: userList, disabledCls: res.data.isEnd ? 'disabled' : ''}))
+          self.page.find('.detail-wrapper').html(detail)
+        } else {
+          alert(res.message)
+        }
+      })
     },
-    showModal: function () {
+    showModal: function (votesLeft) {
+      $('#votesLeft').text(votesLeft)
       this.page.find('.vote-modal').show().one('click', function () {
         $(this).hide()
       })
@@ -164,9 +295,10 @@
       this.page.find('.vote-modal').hide().off('click')
     },
     dispose: function () {
-      this.page.hide()
+      this.page.hide().off('click')
       this.hideModal()
-      self.video.pause()
+      //self.video.pause()
+      self.video.remove()
     }
   }
 
@@ -176,14 +308,17 @@
       location.hash = '#/index'
       return
     }
-    switch (hash) {
-      case '/index':
+    var hashStack = hash.substring(1).split('/')
+    var hashKey = hashStack[0]
+    var hashParams = hashStack[1]
+    switch (hashKey) {
+      case 'index':
         pageIndex.init()
         pageList.init()
         pageDetail.dispose()
         break
-      case '/detail':
-        pageDetail.init()
+      case 'detail':
+        pageDetail.init(hashParams)
         pageIndex.dispose()
         pageList.dispose()
         break

@@ -165,8 +165,14 @@ video {
   padding: 0.16rem 0.33333rem;
 }
 
-.video-vote-star {
-  color: #f3961d;
+.video-name {
+  -ms-flex: 1 1;
+      flex: 1 1;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
 }
 
 .video-vote-star:before {
@@ -175,7 +181,17 @@ video {
   width: 0.42667rem;
   height: 0.42667rem;
   margin-right: 0.13333rem;
+  margin-left: 0.13333rem;
   vertical-align: -0.05333rem;
+  background: url("../assets/images/star-gray.png") no-repeat;
+  background-size: 100% auto;
+}
+
+.video-vote-star.light {
+  color: #f3961d;
+}
+
+.video-vote-star.light:before {
   background: url("../assets/images/star.png") no-repeat;
   background-size: 100% auto;
 }
@@ -208,6 +224,14 @@ video {
       flex: 1 1;
   text-align: center;
   font-size: 16px;
+}
+
+.video-bill-name {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
 }
 
 .video-bill-count > em {
@@ -252,12 +276,18 @@ video {
 .video-container {
   position: relative;
   width: 100%;
-  height: 4.66667rem;
+  height: 5.64rem;
   background-color: #f0f0f0;
   overflow: hidden;
 }
 
+.video-container video, .video-container iframe {
+  width: 100%;
+  height: 100%;
+}
+
 .video-play {
+  display: none;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -273,7 +303,7 @@ video {
 .video-vote-info, .video-summary-panel {
   margin: 0.26667rem 0.13333rem;
   padding: 0.26667rem 0.4rem;
-  border: 0.02667rem solid #ccc;
+  border: 0.02667rem solid #ddd;
   border-radius: 0.26667rem;
 }
 
@@ -308,12 +338,13 @@ video {
       justify-content: space-between;
   -ms-flex-align: center;
       align-items: center;
+  padding: 0.10667rem 0;
 }
 
 .vd-vote-user > img {
   display: inline-block;
-  width: 1.06667rem;
-  height: 1.06667rem;
+  width: 0.8rem;
+  height: 0.8rem;
   margin-right: 0.2rem;
   border-radius: 50%;
   vertical-align: middle;
@@ -378,6 +409,16 @@ video {
 
 .vote-button:active {
   background-color: #d27c0b;
+}
+
+.vote-button.disabled {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+.vote-button.disabled:before {
+  background: url("../assets/images/star-gray.png") no-repeat;
+  background-size: 100% auto;
 }
 
 .vote-modal {
