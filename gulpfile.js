@@ -18,7 +18,7 @@ var gulp         = require('gulp'),
     runSequence  = require('gulp-run-sequence'),
     webserver    = require('gulp-webserver'),
     ifaces       = require('os').networkInterfaces(),
-    config       = require('./buildConfig.json');
+    config       = require('./buildConfig.json')
 
 //编译sass
 gulp.task('compile-sass', function(){
@@ -39,36 +39,44 @@ gulp.task('compile-sass', function(){
       selectorBlackList: [/^html$/],
       minPixelValue: 3
     })
-  ];
+  ]
   return gulp.src('./styles/**/*.scss')
     .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
     .pipe(postcss(plugins))
-    .pipe(gulp.dest('./styles'));
-});
+    .pipe(gulp.dest('./styles'))
+})
 
 //压缩图片 - tinypng
 gulp.task('tinypng', function () {
   return gulp.src('./assets/**/*.{png,jpg,jpeg}')
     .pipe(cache(tinypng(config.tinypngapi)))
     .pipe(gulp.dest('./dist/assets'))
-});
+})
 
 //copy files
 gulp.task('copy-files', function (done) {
-  var tasks = [];
+  var tasks = []
 
   tasks.push(
     gulp.src('./scripts/vendor/**/*.js')
       .pipe(gulp.dest('./dist/scripts/vendor'))
-  );
+  )
 
   tasks.push(
     gulp.src(['./assets/**/*.json', './assets/**/*.mp3'])
       .pipe(gulp.dest('./dist/assets'))
-  );
+  )
 
-  eventstream.merge(tasks).on('end', done);
-});
+  eventstream.merge(tasks).on('end', done)
+})
+
+var getProjectUrl = function () {
+  var url = config.revPrefix + config.projectName
+  if (url !== '') {
+    return url + '/'
+  }
+  return ''
+}
 
 var buildHTML = lazypipe()
   .pipe(minifyInline, {
@@ -83,15 +91,15 @@ var buildHTML = lazypipe()
     },
     cssSelector: 'style[data-minify!="false"]'
   })
-  .pipe(replace, /(:\s*url\(['"]?)(\.\.)?([^)]+?)/gm, '$1' + config.revPrefix + config.projectName + '/$3')
-  .pipe(replace, /(['"])(css|styles|scripts|assets|images|js)\/([^"]+?)(['"])/gm, '$1' + config.revPrefix + config.projectName + "/" + '$2/$3' + '$4');
+  .pipe(replace, /(:\s*url\(['"]?)(\.\.)?([^)]+?)/gm, '$1' + getProjectUrl() + '$3')
+  .pipe(replace, /(['"])(css|styles|scripts|assets|images|js)\/([^"]+?)(['"])/gm, '$1' + getProjectUrl() + '$2/$3' + '$4')
 
 var buildJS = lazypipe()
   .pipe(uglify)
-  .pipe(replace, /"(css|scripts|images|js)\/([^"]+?)"/gm, '"' + config.revPrefix + config.projectName + "/" + '$1/$2' + '"')
-  .pipe(replace, /(url:")([^"]+?)"/gm, '$1' + config.revPrefix + config.projectName + "/assets/assets/" + '$2' + '"');
+  .pipe(replace, /"(css|scripts|images|js)\/([^"]+?)"/gm, '"' + getProjectUrl() + '$1/$2' + '"')
+  .pipe(replace, /(url:")([^"]+?)"/gm, '$1' + getProjectUrl() + 'assets/' + '$2' + '"')
 
-var buildCSS = lazypipe().pipe(cssmin);
+var buildCSS = lazypipe().pipe(cssmin)
 
 gulp.task('useref', function () {
   return gulp.src('./*.html')
@@ -101,14 +109,14 @@ gulp.task('useref', function () {
     .pipe(gulpif('*.css', buildCSS()))
     .pipe(gulp.dest('./dist'))
 
-});
+})
 
 gulp.task('htmlmin', function () {
   return gulp.src('./dist/*.html')
     .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('./dist'))
 
-});
+})
 
 //开启本地 Web 服务器功能
 gulp.task('webserver', function() {
@@ -119,42 +127,42 @@ gulp.task('webserver', function() {
             livereload       : true,
             open             : true,
             directoryListing : false
-        }));
-});
+        }))
+})
 
 gulp.task('watch', function(){
-  gulp.watch('./styles/**/*.scss', ['compile-sass']);
-});
+  gulp.watch('./styles/**/*.scss', ['compile-sass'])
+})
 
 //重新build前删除生产目录
 gulp.task('clean', function () {
   return gulp.src('./dist', {read: false})
-    .pipe(clean({force: true}));
-});
+    .pipe(clean({force: true}))
+})
 
 //清理cache
 gulp.task('clean-cache', function (done) {
-  return cache.clearAll(done);
-});
+  return cache.clearAll(done)
+})
 
 //默认任务
-gulp.task('default', ['compile-sass', 'watch', 'webserver']);
+gulp.task('default', ['compile-sass', 'watch', 'webserver'])
 
 //项目完成提交任务
 gulp.task('build', function(done) {
-  runSequence('clean','useref', /*'htmlmin',*/ 'tinypng', 'copy-files', done);
-});
+  runSequence('clean','useref', /*'htmlmin',*/ 'tinypng', 'copy-files', done)
+})
 
 function getIP(){
-    var ip = 'localhost';
+    var ip = 'localhost'
     for (var dev in ifaces) {
         ifaces[dev].every(function(details){
             if (details.family==='IPv4' && details.address!=='127.0.0.1' && !details.internal) {
-                ip = details.address;
-                return false;
+                ip = details.address
+                return false
             }
-            return true;
-        });
+            return true
+        })
     }
-    return ip;
+    return ip
 }
