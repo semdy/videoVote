@@ -122,17 +122,17 @@
 
   var pageIndex = {
     page: $('#video-index'),
-    _scrollToPage2: function () {
-      tween(window.pageYOffset, window.innerHeight + 17, 700, function (v) {
-        setScrollTop(v)
-      })
-    },
     init: function () {
       document.title = docTitle
-      this.page.show().find('.page-hint').on('click', this._scrollToPage2)
+      this.page.show().on('click', '.page-hint', function () {
+        /* tween(window.pageYOffset, window.innerHeight + 17, 700, function (v) {
+             setScrollTop(v)
+           })*/
+        location.hash = '#/list'
+      })
     },
     dispose: function () {
-      this.page.hide().find('.page-hint').off('click', this._scrollToPage2)
+      this.page.hide().off('click')
     }
   }
 
@@ -312,7 +312,12 @@
     switch (hashKey) {
       case 'index':
         pageIndex.init()
+        pageList.dispose()
+        pageDetail.dispose()
+        break
+      case 'list':
         pageList.init()
+        pageIndex.dispose()
         pageDetail.dispose()
         break
       case 'detail':

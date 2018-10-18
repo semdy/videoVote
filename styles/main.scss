@@ -39,7 +39,7 @@ video {
 .index-page {
   display: none;
   min-height: 100%;
-  margin-bottom: 30px;
+  /*margin-bottom: 30px;*/
   @include bg(index-footer);
   background-position: 50% 100%;
 }

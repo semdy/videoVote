@@ -39,7 +39,7 @@ video {
 .index-page {
   display: none;
   min-height: 100%;
-  margin-bottom: 0.4rem;
+  /*margin-bottom: 30px;*/
   background: url("../assets/images/index-footer.png") no-repeat;
   background-size: 100% auto;
   background-position: 50% 100%;
