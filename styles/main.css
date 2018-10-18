@@ -109,8 +109,8 @@ video {
   padding: 0.33333rem 0.26667rem;
   font-size: 15px;
   font-weight: bold;
-  border-bottom: 0.04rem solid transparent;
-  margin-bottom: -0.04rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
 }
 
 .list-tab-item.current > span {
@@ -216,22 +216,29 @@ video {
 .video-bill-img {
   width: 1.46667rem;
   height: 1.6rem;
+  margin-right: 0.2rem;
+  overflow: hidden;
 }
 
-.video-bill-name,
-.video-bill-count {
-  -ms-flex: 1 1;
-      flex: 1 1;
-  text-align: center;
-  font-size: 16px;
+.video-bill-img img {
+  height: 100%;
 }
 
 .video-bill-name {
+  -ms-flex: 1 1;
+      flex: 1 1;
+  text-align: center;
+  font-size: 13px;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
   -o-text-overflow: ellipsis;
      text-overflow: ellipsis;
+}
+
+.video-bill-count {
+  margin-left: 0.8rem;
+  margin-right: 0.8rem;
 }
 
 .video-bill-count > em {
@@ -244,13 +251,13 @@ video {
   position: relative;
   width: 0.8rem;
   height: 0.8rem;
-  line-height: 0.8rem;
+  line-height: 0.74667rem;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   color: #000;
-  border: 0.02667rem solid #bbb;
+  border: 2px solid #bbb;
   border-radius: 50%;
-  margin-right: 0.2rem;
+  margin-right: 0.26667rem;
 }
 
 .video-bill-order:after {
@@ -287,7 +294,6 @@ video {
 }
 
 .video-play {
-  display: none;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -303,7 +309,7 @@ video {
 .video-vote-info, .video-summary-panel {
   margin: 0.26667rem 0.13333rem;
   padding: 0.26667rem 0.4rem;
-  border: 0.02667rem solid #ddd;
+  border: 1px solid #ddd;
   border-radius: 0.26667rem;
 }
 

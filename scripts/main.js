@@ -157,7 +157,7 @@
     showVideos: function () {
       var videoItemTpl = '<div class="video-item">' +
         '      <div class="video-cover" data-vid="{{id}}">' +
-        '        <img src="" />' +
+        '        <img src="http://mnvideo.kurite.com/img/{{cover}}" />' +
         '      </div>' +
         '      <div class="video-footer">' +
         '        <span class="video-name">{{title}}</span>' +
@@ -176,7 +176,7 @@
     showBill: function () {
       var billItemTpl = '<div class="video-bill-item {{topCls}}" data-vid="{{id}}">' +
         '      <div class="video-bill-img">' +
-        '        <img src="" />' +
+        '        <img src="http://mnvideo.kurite.com/img/{{cover}}" />' +
         '      </div>' +
         '      <div class="video-bill-name">{{title}}</div>' +
         '      <div class="video-bill-count"><em>{{votes}}</em>票</div>' +
@@ -217,14 +217,13 @@
 
   var pageDetail = {
     page: $('#video-detail'),
-    video: $('#video'),
     init: function (vid) {
       var self = this
       this.page.show()
       this.showDetail(vid)
-      /*this.page.find('#vplay').show().on('click', function () {
+      /*this.page.on('click', '#vplay', function () {
         $(this).hide()
-        self.video.play()
+        $('#video').get(0).play()
       })*/
       this.page.on('click', '.vote-button', function (e) {
         var vid = e.currentTarget.dataset.vid
@@ -242,8 +241,8 @@
       var self = this
       var detailTpl = '<div class="video-container">' +
         /*'      <video id="video" src="{{href}}" x5-video-player-type="h5" x5-video-player-fullscreen="true" webkit-playsinline="true" x-webkit-airplay="true" playsinline="true"></video>' +*/
-        '<iframe id="video" frameborder="0" src="{{href}}" allowFullScreen="true"></iframe>' +
-        '      <span id="vplay" class="video-play"></span>' +
+        '<iframe id="video" frameborder="0" src="{{href}}" allowFullScreen="false"></iframe>' +
+        '      <span id="vplay" class="video-play" style="display: none;"></span>' +
         '    </div>' +
         '    <div class="video-vote-info">' +
         '      <div class="video-vote-summary">' +
@@ -297,8 +296,7 @@
     dispose: function () {
       this.page.hide().off('click')
       this.hideModal()
-      //self.video.pause()
-      self.video.remove()
+      $('#video').remove()
     }
   }
 

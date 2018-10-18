@@ -103,8 +103,8 @@ video {
     padding: 25px 20px;
     font-size: 15px;
     font-weight: bold;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -3px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
   }
 
   &.current {
@@ -200,16 +200,18 @@ video {
 .video-bill-img {
   width: 110px;
   height: 120px;
-}
+  margin-right: 15px;
+  overflow: hidden;
 
-.video-bill-name,
-.video-bill-count {
-  flex: 1;
-  text-align: center;
-  font-size: 16px;
+  img {
+    height: 100%;
+  }
 }
 
 .video-bill-name {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -217,6 +219,8 @@ video {
 }
 
 .video-bill-count {
+  margin-left: 60px;
+  margin-right: 60px;
   > em {
     color: #f0a83e;
     font-style: normal;
@@ -228,13 +232,13 @@ video {
   position: relative;
   width: 60px;
   height: 60px;
-  line-height: 60px;
+  line-height: 56px;
   text-align: center;
-  font-size: 18px;
+  font-size: 16px;
   color: #000;
   border: 2px solid #bbb;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 20px;
 
   &:after {
     content: '';
@@ -268,7 +272,6 @@ video {
 }
 
 .video-play {
-  display: none;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -281,7 +284,7 @@ video {
 .video-vote-info {
   margin: 20px 10px;
   padding: 20px 30px;
-  border: 2px solid #ddd;
+  border: 1px solid #ddd;
   border-radius: 20px;
 }
 

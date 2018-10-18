@@ -36,7 +36,8 @@ gulp.task('compile-sass', function(){
     pxtorem({
       rootValue: 75,
       propList: ['*', '!font', '!font-size'],
-      selectorBlackList: [/^html$/]
+      selectorBlackList: [/^html$/],
+      minPixelValue: 3
     })
   ];
   return gulp.src('./styles/**/*.scss')
