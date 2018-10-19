@@ -52,15 +52,15 @@ video {
       justify-content: space-between;
   -ms-flex-align: center;
       align-items: center;
-  padding: 0.26667rem 0.33333rem;
+  padding: 0.2rem 0.33333rem;
 }
 
 .index-header .index-hd-logo {
-  width: 4.08rem;
+  width: 3.01333rem;
 }
 
 .index-header .index-hd-subject {
-  width: 2.70667rem;
+  width: 1.90667rem;
 }
 
 .index-hero {
@@ -335,6 +335,13 @@ video {
   margin-right: 0.2rem;
   background: url("../assets/images/star.png") no-repeat;
   background-size: 100% auto;
+}
+
+.vd-vote-users {
+  max-height: 2.93333rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .vd-vote-item {

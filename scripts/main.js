@@ -115,7 +115,7 @@
       if (res.success) {
         callback(res)
       } else {
-        alert(res.message)
+        alert('您已投过票，剩余'+ res.data +'次机会投给其它视频')
       }
     }, 'json')
   }
@@ -210,6 +210,7 @@
       if (vid) {
         userVote(vid, function () {
           $(target).addClass('light').text(+$(target).text() + 1)
+          alert('投票成功')
         })
       }
     },
@@ -285,7 +286,7 @@
       })
     },
     showModal: function (votesLeft) {
-      $('#votesLeft').text(votesLeft)
+      $('#votes-left').text(votesLeft)
       this.page.find('.vote-modal').show().one('click', function () {
         $(this).hide()
       })

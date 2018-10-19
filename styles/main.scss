@@ -48,12 +48,12 @@ video {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 25px;
+  padding: 15px 25px;
   .index-hd-logo {
-    width: 306px;
+    width: 226px;
   }
   .index-hd-subject {
-    width: 203px;
+    width: 143px;
   }
 }
 
@@ -307,6 +307,13 @@ video {
     margin-right: 15px;
     @include bg(star);
   }
+}
+
+.vd-vote-users {
+  max-height: 220px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .vd-vote-item {
