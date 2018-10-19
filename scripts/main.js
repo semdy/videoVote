@@ -139,7 +139,7 @@
   var pageList = {
     page: $('#video-list'),
     init: function () {
-      document.title = docTitle
+      document.title = docTitle + ' - 投票列表'
       this.page.show()
         .on('click', '.list-tab-item', this._tabHandle)
         .on('click', '.video-cover', this._itemClickHandle)
@@ -232,7 +232,7 @@
         if (vid) {
           userVote(vid, function (res) {
             self.showModal(res.data)
-            self.refresh()
+            self.refresh(vid)
           })
         }
       })
@@ -291,7 +291,7 @@
       })
       return userList
     },
-    refresh: function () {
+    refresh: function (vid) {
       var self = this
       $.getJSON(serverUrl + '/video/videoDetail', {videoId: vid}).then(function (res) {
         self.page.find('.vd-count').text(res.data.votes)
