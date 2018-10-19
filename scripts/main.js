@@ -139,6 +139,7 @@
   var pageList = {
     page: $('#video-list'),
     init: function () {
+      document.title = docTitle
       this.page.show()
         .on('click', '.list-tab-item', this._tabHandle)
         .on('click', '.video-cover', this._itemClickHandle)
@@ -231,6 +232,7 @@
         if (vid) {
           userVote(vid, function (res) {
             self.showModal(res.data)
+            self.refresh()
           })
         }
       })
@@ -263,21 +265,11 @@
         '<div class="vd-vote-action">' +
         '    <button class="vote-button {{disabledCls}}" data-vid="{{id}}">投票</button>' +
         '  </div>'
-      var userItemTpl =  '<div class="vd-vote-item">' +
-        '          <div class="vd-vote-user">' +
-        '            <img src="{{headImg}}" class="vote-avatar" alt="{{name}}">' +
-        '            <span>{{name}}</span>' +
-        '          </div>' +
-        '          <div class="vd-vote-trend">+1</div>' +
-        '        </div>'
 
       $.getJSON(serverUrl + '/video/videoDetail', {videoId: vid}).then(function (res) {
         if (res.success) {
-          var userList = ''
           document.title = res.data.title
-          res.data.voteList.forEach(function (item) {
-            userList += tpl(userItemTpl, item)
-          })
+          var userList = self.getVoteUsers(res.data.voteList)
           var detail = tpl(detailTpl, $.extend(res.data, {userList: userList, disabledCls: res.data.isEnd ? 'disabled' : ''}))
           self.page.find('.detail-wrapper').html(detail)
         } else {
@@ -285,8 +277,32 @@
         }
       })
     },
+    getVoteUsers: function (voteList) {
+      var userItemTpl =  '<div class="vd-vote-item">' +
+        '          <div class="vd-vote-user">' +
+        '            <img src="{{headImg}}" class="vote-avatar" alt="{{name}}">' +
+        '            <span>{{name}}</span>' +
+        '          </div>' +
+        '          <div class="vd-vote-trend">+1</div>' +
+        '        </div>'
+      var userList = ''
+      voteList.forEach(function (item) {
+        userList += tpl(userItemTpl, item)
+      })
+      return userList
+    },
+    refresh: function () {
+      var self = this
+      $.getJSON(serverUrl + '/video/videoDetail', {videoId: vid}).then(function (res) {
+        self.page.find('.vd-count').text(res.data.votes)
+        self.page.find('.vd-vote-users').html(self.getVoteUsers(res.data.voteList))
+        if (res.data.isEnd) {
+          self.page.find('.vote-button ').addClass('disabled')
+        }
+      })
+    },
     showModal: function (votesLeft) {
-      $('#votes-left').text(votesLeft)
+      //$('#votes-left').text(votesLeft)
       this.page.find('.vote-modal').show().one('click', function () {
         $(this).hide()
       })

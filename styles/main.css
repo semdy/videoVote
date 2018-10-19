@@ -427,6 +427,7 @@ video {
 .vote-button.disabled {
   background-color: #f0f0f0;
   color: #666;
+  pointer-events: none;
 }
 
 .vote-button.disabled:before {
