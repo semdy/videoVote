@@ -39,6 +39,7 @@ video {
 .index-page {
   display: none;
   min-height: 100%;
+  padding-bottom: 300px;
   /*margin-bottom: 30px;*/
   @include bg(index-footer);
   background-position: 50% 100%;
@@ -69,7 +70,7 @@ video {
 }
 
 .index-hero-text h1 {
-  font-size: 22px;
+  font-size: 18px;
   color: #00aa08;
   text-align: center;
 }
@@ -78,7 +79,6 @@ video {
   text-align: center;
   padding: 15px 0;
   color: #666;
-  font-size: 15px;
 }
 
 
@@ -152,6 +152,7 @@ video {
 .video-footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 12px 25px;
 }
 
@@ -293,7 +294,7 @@ video {
   justify-content: space-between;
   color: #f0a83e;
   font-size: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   .vd-count {
     font-size: 18px;
@@ -374,7 +375,9 @@ video {
 }
 
 .vote-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 18px 35px;
   background-color: #f3961d;
   color: #fff;

@@ -39,6 +39,7 @@ video {
 .index-page {
   display: none;
   min-height: 100%;
+  padding-bottom: 4rem;
   /*margin-bottom: 30px;*/
   background: url("../assets/images/index-footer.png") no-repeat;
   background-size: 100% auto;
@@ -75,7 +76,7 @@ video {
 }
 
 .index-hero-text h1 {
-  font-size: 22px;
+  font-size: 18px;
   color: #00aa08;
   text-align: center;
 }
@@ -84,7 +85,6 @@ video {
   text-align: center;
   padding: 0.2rem 0;
   color: #666;
-  font-size: 15px;
 }
 
 .page-list-wrap {
@@ -162,6 +162,8 @@ video {
   display: flex;
   -ms-flex-pack: justify;
       justify-content: space-between;
+  -ms-flex-align: center;
+      align-items: center;
   padding: 0.16rem 0.33333rem;
 }
 
@@ -320,7 +322,7 @@ video {
       justify-content: space-between;
   color: #f0a83e;
   font-size: 16px;
-  margin-bottom: 0.26667rem;
+  margin-bottom: 0.13333rem;
 }
 
 .video-vote-summary .vd-count {
@@ -399,7 +401,12 @@ video {
 }
 
 .vote-button {
-  display: inline-block;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
   padding: 0.24rem 0.46667rem;
   background-color: #f3961d;
   color: #fff;

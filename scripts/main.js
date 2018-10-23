@@ -115,7 +115,7 @@
       if (res.success) {
         callback(res)
       } else {
-        alert('您已投过票，剩余'+ res.data +'次机会投给其它视频')
+        alert(res.message)
       }
     }, 'json')
   }
@@ -138,8 +138,7 @@
 
   var pageList = {
     page: $('#video-list'),
-    init: function () {
-      document.title = docTitle + ' - 投票列表'
+    init: function (isFromDetail) {
       this.page.show()
         .on('click', '.list-tab-item', this._tabHandle)
         .on('click', '.video-cover', this._itemClickHandle)
@@ -147,12 +146,12 @@
         .on('click', '.video-vote-star', this._handleStar)
       this.page.find('.vote-videos').one('shown', this.showVideos)
       this.page.find('.videos-bill').one('shown', this.showBill)
-      this.page.find('.list-tab-item').first().trigger('click')
+      this.page.find('.list-tab-item').eq(isFromDetail ? 1 : 0).trigger('click')
     },
     dispose: function () {
       this.page.hide()
         .off('click')
-        .find('.vote-videos').off('shown', this.showVotes)
+        .find('.vote-videos').off('shown', this.showVideos)
         .find('.videos-bill').off('shown', this.showBill)
     },
     showVideos: function () {
@@ -198,6 +197,11 @@
       var curPane = $('#video-list').find('.list-pane').eq(index)
       curPane.show().siblings('.list-pane').hide()
       curPane.trigger('shown')
+      if (index === 0) {
+        document.title = docTitle + ' - 投票列表'
+      } else {
+        document.title = docTitle + ' - 排行榜'
+      }
     },
     _itemClickHandle: function (e) {
       var vid = e.currentTarget.dataset.vid
@@ -209,9 +213,9 @@
       var target = e.currentTarget
       var vid = target.dataset.vid
       if (vid) {
-        userVote(vid, function () {
+        userVote(vid, function (res) {
           $(target).addClass('light').text(+$(target).text() + 1)
-          alert('投票成功')
+          alert(res.message)
         })
       }
     },
@@ -317,6 +321,8 @@
     }
   }
 
+  var lastPath = null
+
   function runApp() {
     var hash = window.location.hash.substring(1)
     if (hash === '') {
@@ -333,7 +339,7 @@
         pageDetail.dispose()
         break
       case 'list':
-        pageList.init()
+        pageList.init(lastPath === 'detail')
         pageIndex.dispose()
         pageDetail.dispose()
         break
@@ -345,6 +351,7 @@
       default:
         //
     }
+    lastPath = hashKey
     setScrollTop(0)
   }
 
