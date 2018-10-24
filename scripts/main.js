@@ -247,7 +247,6 @@
       var timer = null
       $(window).on('resize.video', function () {
         if (timer) clearTimeout(timer)
-        console.log(1)
         timer = setTimeout(function () {
           self.setVideoSize()
         }, 200)
