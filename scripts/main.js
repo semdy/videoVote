@@ -243,6 +243,15 @@
           })
         }
       })
+
+      var timer = null
+      $(window).on('resize.video', function () {
+        if (timer) clearTimeout(timer)
+        console.log(1)
+        timer = setTimeout(function () {
+          self.setVideoSize()
+        }, 200)
+      })
     },
     showDetail: function (vid) {
       if (!vid) {
@@ -279,6 +288,7 @@
           var userList = self.getVoteUsers(res.data.voteList)
           var detail = tpl(detailTpl, $.extend(res.data, {userList: userList, disabledCls: res.data.isEnd ? 'disabled' : ''}))
           self.page.find('.detail-wrapper').html(detail)
+          self.setVideoSize()
         } else {
           alert(res.message)
         }
@@ -308,6 +318,9 @@
         }
       })
     },
+    setVideoSize: function () {
+      this.page.find('.video-container').height(423*window.innerWidth/750)
+    },
     showModal: function (votesLeft) {
       //$('#votes-left').text(votesLeft)
       this.page.find('.vote-modal').show().one('click', function () {
@@ -321,6 +334,7 @@
       this.page.hide().off('click')
       this.hideModal()
       $('#video').remove()
+      $(window).off('resize.video')
     }
   }
 
