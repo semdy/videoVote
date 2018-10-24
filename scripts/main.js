@@ -138,7 +138,7 @@
 
   var pageList = {
     page: $('#video-list'),
-    init: function (isFromDetail) {
+    init: function () {
       this.page.show()
         .on('click', '.list-tab-item', this._tabHandle)
         .on('click', '.video-cover', this._itemClickHandle)
@@ -146,7 +146,8 @@
         .on('click', '.video-vote-star', this._handleStar)
       this.page.find('.vote-videos').one('shown', this.showVideos)
       this.page.find('.videos-bill').one('shown', this.showBill)
-      this.page.find('.list-tab-item').eq(isFromDetail ? 1 : 0).trigger('click')
+      this.page.find('.list-tab-item').eq(sessionStorage.__from === 'bill' ? 1 : 0).trigger('click')
+      sessionStorage.removeItem('__from')
     },
     dispose: function () {
       this.page.hide()
@@ -156,7 +157,7 @@
     },
     showVideos: function () {
       var videoItemTpl = '<div class="video-item">' +
-        '      <div class="video-cover" data-vid="{{id}}">' +
+        '      <div class="video-cover" data-type="list" data-vid="{{id}}">' +
         '        <img src="http://mnvideo.kurite.com/img/{{cover}}" />' +
         '      </div>' +
         '      <div class="video-footer">' +
@@ -174,7 +175,7 @@
       })
     },
     showBill: function () {
-      var billItemTpl = '<div class="video-bill-item {{topCls}}" data-vid="{{id}}">' +
+      var billItemTpl = '<div class="video-bill-item {{topCls}}" data-type="bill" data-vid="{{id}}">' +
         '      <div class="video-bill-img">' +
         '        <img src="http://mnvideo.kurite.com/img/{{cover}}" />' +
         '      </div>' +
@@ -205,7 +206,9 @@
     },
     _itemClickHandle: function (e) {
       var vid = e.currentTarget.dataset.vid
+      var type = e.currentTarget.dataset.type
       if (vid) {
+        sessionStorage.__from = type
         location.hash = '#/detail/' + vid
       }
     },
@@ -339,7 +342,7 @@
         pageDetail.dispose()
         break
       case 'list':
-        pageList.init(lastPath === 'detail')
+        pageList.init()
         pageIndex.dispose()
         pageDetail.dispose()
         break
