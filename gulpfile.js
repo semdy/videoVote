@@ -1,27 +1,26 @@
-var gulp         = require('gulp'),
-    eventstream  = require('event-stream'),
-    cssmin       = require('gulp-minify-css'),
-    uglify       = require('gulp-uglify'),
-    sass         = require('gulp-sass'),
-    minifyInline = require('gulp-minify-inline'),
-    htmlmin      = require('gulp-htmlmin'),
-    clean        = require('gulp-clean'),
-    cache        = require('gulp-cache'),
-    replace      = require('gulp-replace'),
-    useref       = require('gulp-useref'),
-    gulpif       = require('gulp-if'),
-    lazypipe     = require('lazypipe'),
-    tinypng      = require('gulp-tinypng'),
-    postcss      = require('gulp-postcss'),
-    autoprefixer = require('autoprefixer'),
-    pxtorem      = require('postcss-pxtorem'),
-    runSequence  = require('gulp-run-sequence'),
-    webserver    = require('gulp-webserver'),
-    ifaces       = require('os').networkInterfaces(),
-    config       = require('./buildConfig.json')
+var gulp = require('gulp'),
+  eventstream = require('event-stream'),
+  cssmin = require('gulp-minify-css'),
+  uglify = require('gulp-uglify'),
+  sass = require('gulp-sass'),
+  minifyInline = require('gulp-minify-inline'),
+  htmlmin = require('gulp-htmlmin'),
+  clean = require('gulp-clean'),
+  cache = require('gulp-cache'),
+  replace = require('gulp-replace'),
+  useref = require('gulp-useref'),
+  gulpif = require('gulp-if'),
+  lazypipe = require('lazypipe'),
+  tinypng = require('gulp-tinypng'),
+  postcss = require('gulp-postcss'),
+  autoprefixer = require('autoprefixer'),
+  pxtorem = require('postcss-pxtorem'),
+  runSequence = require('gulp-run-sequence'),
+  webserver = require('gulp-webserver'),
+  ifaces = require('os').networkInterfaces(),
+  config = require('./buildConfig.json')
 
-//编译sass
-gulp.task('compile-sass', function(){
+gulp.task('compile-sass', function () {
   var plugins = [
     require('postcss-flexbugs-fixes'),
     autoprefixer({
@@ -46,14 +45,12 @@ gulp.task('compile-sass', function(){
     .pipe(gulp.dest('./styles'))
 })
 
-//压缩图片 - tinypng
 gulp.task('tinypng', function () {
   return gulp.src('./assets/**/*.{png,jpg,jpeg}')
     .pipe(cache(tinypng(config.tinypngapi)))
     .pipe(gulp.dest('./dist/assets'))
 })
 
-//copy files
 gulp.task('copy-files', function (done) {
   var tasks = []
 
@@ -118,51 +115,46 @@ gulp.task('htmlmin', function () {
 
 })
 
-//开启本地 Web 服务器功能
-gulp.task('webserver', function() {
-    return gulp.src('./')
-        .pipe(webserver({
-            host             : getIP(),
-            port             : 8082,
-            livereload       : true,
-            open             : true,
-            directoryListing : false
-        }))
+gulp.task('webserver', function () {
+  return gulp.src('./')
+    .pipe(webserver({
+      host: getIP(),
+      port: 8082,
+      livereload: true,
+      open: true,
+      directoryListing: false
+    }))
 })
 
-gulp.task('watch', function(){
+gulp.task('watch', function () {
   gulp.watch('./styles/**/*.scss', ['compile-sass'])
 })
 
-//重新build前删除生产目录
 gulp.task('clean', function () {
   return gulp.src('./dist', {read: false})
     .pipe(clean({force: true}))
 })
 
-//清理cache
 gulp.task('clean-cache', function (done) {
   return cache.clearAll(done)
 })
 
-//默认任务
 gulp.task('default', ['compile-sass', 'watch', 'webserver'])
 
-//项目完成提交任务
-gulp.task('build', function(done) {
-  runSequence('clean','useref', /*'htmlmin',*/ 'tinypng', 'copy-files', done)
+gulp.task('build', function (done) {
+  runSequence('clean', 'useref', /*'htmlmin',*/ 'tinypng', 'copy-files', done)
 })
 
-function getIP(){
-    var ip = 'localhost'
-    for (var dev in ifaces) {
-        ifaces[dev].every(function(details){
-            if (details.family==='IPv4' && details.address!=='127.0.0.1' && !details.internal) {
-                ip = details.address
-                return false
-            }
-            return true
-        })
-    }
-    return ip
+function getIP() {
+  var ip = 'localhost'
+  for (var dev in ifaces) {
+    ifaces[dev].every(function (details) {
+      if (details.family === 'IPv4' && details.address !== '127.0.0.1' && !details.internal) {
+        ip = details.address
+        return false
+      }
+      return true
+    })
+  }
+  return ip
 }
