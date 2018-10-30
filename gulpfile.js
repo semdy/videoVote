@@ -68,7 +68,7 @@ gulp.task('copy-files', function (done) {
 })
 
 var getProjectUrl = function () {
-  var url = config.revPrefix + config.projectName
+  var url = config.baseUrl + config.projectName
   if (url !== '') {
     return url + '/'
   }
