@@ -69,8 +69,8 @@
   height: 100%;
 }
 
-@mixin bg ($name) {
-  background: url("../assets/images/#{$name}.png") no-repeat;
+@mixin bg ($name, $ext: png) {
+  background: url("../assets/images/#{$name}.#{$ext}") no-repeat;
   background-size: 100% auto;
 }
 

@@ -138,7 +138,19 @@
 
   var pageList = {
     page: $('#video-list'),
+    tabIndex: 0,
+    pageNum: 1,
+    inited: false,
+    lastScrollTop: 0,
     init: function () {
+      if (this.inited) {
+        this.page.show()
+        setScrollTop(this.lastScrollTop)
+        this.bindScroll()
+        return
+      }
+
+      this.pageNum = 1
       this.page.show()
         .on('click', '.list-tab-item', this._tabHandle)
         .on('click', '.video-cover', this._itemClickHandle)
@@ -148,14 +160,26 @@
       this.page.find('.videos-bill').one('shown', this.showBill)
       this.page.find('.list-tab-item').eq(sessionStorage.__from === 'bill' ? 1 : 0).trigger('click')
       sessionStorage.removeItem('__from')
+      this.bindScroll()
+      this.inited = true;
+    },
+    bindScroll: function () {
+      var self = this
+      $(window).on('scroll.appendlist', function () {
+        self.lastScrollTop = window.pageYOffset
+        if (window.pageYOffset + window.innerHeight >= document.body.scrollHeight ) {
+          self.showVideos(true)
+        }
+      })
     },
     dispose: function () {
       this.page.hide()
-        .off('click')
+       /* .off('click')
         .find('.vote-videos').off('shown', this.showVideos)
-        .find('.videos-bill').off('shown', this.showBill)
+        .find('.videos-bill').off('shown', this.showBill)*/
+      $(window).off('scroll.appendlist')
     },
-    showVideos: function () {
+    showVideos: function (isAppend) {
       var videoItemTpl = '<div class="video-item">' +
         '      <div class="video-cover" data-type="list" data-vid="{{id}}">' +
         '        <img src="http://mnvideo.kurite.com/img/{{cover}}" />' +
@@ -165,10 +189,17 @@
         '        <span class="video-vote-star {{lightCls}}" data-vid="{{id}}">{{votes}}</span>' +
         '      </div>' +
         '    </div>'
-      $.getJSON(serverUrl + '/video/videoList').then(function (res) {
+      $.getJSON(serverUrl + '/video/videoList', {page: pageList.pageNum, limit: 10}).then(function (res) {
          if (res.success) {
-           var videoList = buildVideoList(videoItemTpl, res.data)
-           $('#video-list').find('.vote-videos').html(videoList)
+           if (res.data.docs.length > 0) {
+             pageList.pageNum++
+             var videoList = buildVideoList(videoItemTpl, res.data.docs)
+             if (!isAppend) {
+               $('#video-list').find('.vote-videos').html(videoList)
+             } else {
+               $('#video-list').find('.vote-videos').append(videoList)
+             }
+           }
          } else {
            alert(res.message)
          }
@@ -196,6 +227,7 @@
       $(this).addClass('current').siblings().removeClass('current')
       var index = $(this).index()
       var curPane = $('#video-list').find('.list-pane').eq(index)
+      pageList.tabIndex = index
       curPane.show().siblings('.list-pane').hide()
       curPane.trigger('shown')
       if (index === 0) {
@@ -226,22 +258,29 @@
 
   var pageDetail = {
     page: $('#video-detail'),
+    pageNum: 1,
     init: function (vid) {
       var self = this
+      this.pageNum = 1
       this.page.show()
       this.showDetail(vid)
       /*this.page.on('click', '#vplay', function () {
         $(this).hide()
         $('#video').get(0).play()
       })*/
-      this.page.on('click', '.vote-button', function (e) {
+      this.page.on('click', '[data-action="vote"]', function (e) {
         var vid = e.currentTarget.dataset.vid
         if (vid) {
           userVote(vid, function (res) {
+            $(e.currentTarget).addClass('hl')
             self.showModal(res.data)
             self.refresh(vid)
+            setScrollTop($('#comments').offset().top)
           })
         }
+      }).on('click', '[data-action="expand"]', function () {
+        $(this).parent().toggleClass('expand')
+        $(this).toggleClass('active')
       })
 
       var timer = null
@@ -250,6 +289,12 @@
         timer = setTimeout(function () {
           self.setVideoSize()
         }, 200)
+      })
+
+      $(window).on('scroll.appendcomment', function () {
+        if (window.pageYOffset + window.innerHeight >= document.body.scrollHeight ) {
+          self.getComments(vid, true)
+        }
       })
     },
     showDetail: function (vid) {
@@ -262,66 +307,110 @@
         '<iframe id="video" frameborder="0" src="{{href}}" allowFullScreen="false"></iframe>' +
         '      <span id="vplay" class="video-play" style="display: none;"></span>' +
         '    </div>' +
-        '    <div class="video-vote-info">' +
-        '      <div class="video-vote-summary">' +
-        '        <span class="vd-label">累计票数</span>' +
-        '        <span class="vd-count">{{votes}}</span>' +
-        '      </div>' +
-        '      <div class="vd-vote-users">' +
-        '      {{userList}}'+
-        '      </div>' +
-        '    </div>' +
         '    <div class="video-summary-panel">' +
         '      <h4>视频介绍</h4>' +
         '      <div class="video-summary-desc">' +
-        '        <p>{{detail}}</p>' +
+        '        {{detail}}' +
+        '       <div class="summary-expand" data-action="expand" style="display: {{expandShow}}"><em>...  展开</em><span>收起</span></div>' +
         '      </div>' +
         '    </div>' +
-        '<div class="vd-vote-action">' +
-        '    <button class="vote-button {{disabledCls}}" data-vid="{{id}}">投票</button>' +
+        '   <div id="comments"></div>' +
+        ' <div class="vd-vote-action">' +
+        '   <div class="commit-wrap">' +
+        '   <form id="comment-form">' +
+        '     <input type="text" name="comment" placeholder="添加评论..." />' +
+        '   </form>' +
+        '     <span class="commit-emot"></span>' +
+        '   </div>' +
+        '   <div class="commit-info">' +
+        '     <span><i class="comment-count"></i></span>' +
+        '     <span data-action="vote" data-vid="{{id}}" class="{{disabledCls}}"><i class="vd-count">{{votes}}</i></span>' +
+        '   </div>' +
         '  </div>'
 
       $.getJSON(serverUrl + '/video/videoDetail', {videoId: vid}).then(function (res) {
         if (res.success) {
           document.title = res.data.title
-          var userList = self.getVoteUsers(res.data.voteList)
-          var detail = tpl(detailTpl, $.extend(res.data, {userList: userList, disabledCls: res.data.isEnd ? 'disabled' : ''}))
+          var detail = tpl(detailTpl, $.extend(res.data, {disabledCls: res.data.isEnd ? 'disabled' : '', expandShow: res.data.detail.length > 70 ? 'block' : 'none'}))
           self.page.find('.detail-wrapper').html(detail)
+          self.getComments(vid)
           self.setVideoSize()
         } else {
           alert(res.message)
         }
       })
     },
-    getVoteUsers: function (voteList) {
-      var userItemTpl =  '<div class="vd-vote-item">' +
+    getComments: function (vid, isAppend, refresh) {
+      var self = this;
+      var ItemTpl =  '<div class="vd-vote-item">' +
         '          <div class="vd-vote-user">' +
         '            <img src="{{headImg}}" class="vote-avatar" alt="{{name}}">' +
-        '            <span>{{name}}</span>' +
         '          </div>' +
-        '          <div class="vd-vote-trend">+1</div>' +
+        '          <div class="vd-vote-cont">' +
+        '             <div class="vd-vote-hd">' +
+                        '<span>{{name}}</span>' +
+        '               <div class="vd-vote-date">{{date}}</div>' +
+        '             </div>' +
+        '             <div class="vd-vote-comment">{{comment}}</div>' +
+        '         </div>' +
         '        </div>'
-      var userList = ''
-      voteList.forEach(function (item) {
-        userList += tpl(userItemTpl, item)
+      if (refresh) {
+        pageDetail.pageNum = 1
+      }
+      $.post(serverUrl + '/comment/getComment', {videoId: vid, page: pageDetail.pageNum, limit: 20}).then(function (res) {
+        if (res.success) {
+          if (res.data.docs.length > 0) {
+            pageDetail.pageNum++
+            var ret = '';
+            res.data.docs.forEach(function (item) {
+              ret += tpl(ItemTpl, item)
+            })
+            if (isAppend) {
+              $('#comments').append(ret)
+            } else {
+              $('#comments').html(ret)
+            }
+          }
+          self.page.find('.comment-count').text(res.data.total)
+          self.bindComment(vid)
+        } else {
+          alert(res.message)
+        }
+      }, 'json');
+    },
+    bindComment: function (vid) {
+      $('#comment-form').off('submit').on('submit', function (e) {
+        e.preventDefault();
+        var that = this;
+        var comment = this.comment.value
+        if ($.trim(comment) === '') {
+          return alert('请输入有效的评论')
+        }
+        $.post(serverUrl + '/comment/addComment', {openId: openId, videoId: vid, comment: comment}, function (res) {
+          if (res.success) {
+            that.comment.value = ''
+            pageDetail.refresh(vid, true)
+            alert(res.message)
+          } else {
+            alert(res.message)
+          }
+        }, 'json')
       })
-      return userList
     },
     refresh: function (vid) {
       var self = this
       $.getJSON(serverUrl + '/video/videoDetail', {videoId: vid}).then(function (res) {
         self.page.find('.vd-count').text(res.data.votes)
-        self.page.find('.vd-vote-users').html(self.getVoteUsers(res.data.voteList))
+        self.getComments(vid, false, true)
         if (res.data.isEnd) {
-          self.page.find('.vote-button ').addClass('disabled')
+          self.page.find('[data-action="vote"]').addClass('disabled')
         }
       })
     },
     setVideoSize: function () {
       this.page.find('.video-container').height(423*window.innerWidth/750)
     },
-    showModal: function (votesLeft) {
-      //$('#votes-left').text(votesLeft)
+    showModal: function () {
       this.page.find('.vote-modal').show().one('click', function () {
         $(this).hide()
       })
@@ -333,7 +422,8 @@
       this.page.hide().off('click')
       this.hideModal()
       $('#video').remove()
-      $(window).off('resize.video')
+      $('#comment-form').off('submit')
+      $(window).off('resize.video').off('scroll.appendcomment')
     }
   }
 
@@ -368,7 +458,7 @@
         //
     }
     lastPath = hashKey
-    setScrollTop(0)
+    //setScrollTop(0)
   }
 
   function main() {

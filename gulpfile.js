@@ -64,6 +64,11 @@ gulp.task('copy-files', function (done) {
       .pipe(gulp.dest('./dist/assets'))
   )
 
+  tasks.push(
+    gulp.src(['./assets/images/**/*.svg'])
+      .pipe(gulp.dest('./dist/assets/images'))
+  )
+
   eventstream.merge(tasks).on('end', done)
 })
 

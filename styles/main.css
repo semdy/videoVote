@@ -54,6 +54,7 @@ video {
   -ms-flex-align: center;
       align-items: center;
   padding: 0.2rem 0.33333rem;
+  background-color: #f6f7f9;
 }
 
 .index-header .index-hd-logo {
@@ -87,9 +88,18 @@ video {
   color: #666;
 }
 
+.video-list-header {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 200;
+}
+
 .page-list-wrap {
   display: none;
   min-height: 100%;
+  padding-top: 2.66667rem;
 }
 
 .list-tabs {
@@ -110,7 +120,6 @@ video {
   font-size: 15px;
   font-weight: bold;
   border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
 }
 
 .list-tab-item.current > span {
@@ -280,14 +289,36 @@ video {
   display: none;
   background-color: #fff;
   min-height: 100%;
+  padding-top: 7rem;
+  padding-bottom: 1.6rem;
+}
+
+.page-video-detail .index-header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 200;
+}
+
+.detail-wrapper {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex: 1 1;
+      flex: 1 1;
+  -ms-flex-direction: column;
+      flex-direction: column;
 }
 
 .video-container {
-  position: relative;
+  position: fixed;
+  left: 0;
+  top: 1.4rem;
   width: 100%;
   height: 5.64rem;
   background-color: #f0f0f0;
   overflow: hidden;
+  z-index: 200;
 }
 
 .video-container video, .video-container iframe {
@@ -339,6 +370,10 @@ video {
   background-size: 100% auto;
 }
 
+#comments {
+  padding-top: 0.26667rem;
+}
+
 .vd-vote-users {
   max-height: 2.93333rem;
   overflow-x: hidden;
@@ -349,34 +384,46 @@ video {
 .vd-vote-item {
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-pack: justify;
-      justify-content: space-between;
   -ms-flex-align: center;
       align-items: center;
-  padding: 0.10667rem 0;
+  padding: 0.26667rem 0.4rem;
+}
+
+.vd-vote-cont {
+  -ms-flex: 1 1;
+      flex: 1 1;
 }
 
 .vd-vote-user > img {
   display: inline-block;
-  width: 0.8rem;
-  height: 0.8rem;
+  width: 1.2rem;
+  height: 1.2rem;
   margin-right: 0.2rem;
   border-radius: 50%;
   vertical-align: middle;
 }
 
-.vd-vote-trend {
-  margin-right: 0.26667rem;
+.vd-vote-hd {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: justify;
+      justify-content: space-between;
+  margin-bottom: 0.13333rem;
 }
 
-.vd-vote-trend:before {
-  content: '';
-  display: inline-block;
-  width: 0.42667rem;
-  height: 0.42667rem;
-  margin-right: 0.2rem;
-  background: url("../assets/images/star-gray.png") no-repeat;
-  background-size: 100% auto;
+.vd-vote-hd > span {
+  font-size: 16px;
+}
+
+.vd-vote-comment {
+  color: #666;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.vd-vote-date {
+  color: #999;
+  margin-right: 0.66667rem;
 }
 
 .video-summary-panel > h4 {
@@ -386,18 +433,41 @@ video {
   font-weight: normal;
 }
 
-.video-summary-desc p {
-  margin: 0;
+.video-summary-desc {
+  position: relative;
+  max-height: 1.6rem;
+  overflow: hidden;
   text-indent: 2em;
 }
 
-.vd-vote-action {
-  text-align: center;
-  padding: 0.46667rem 0;
+.video-summary-desc.expand {
+  max-height: none;
 }
 
-.vd-vote-action .vote-button {
-  width: 45%;
+.video-summary-desc .summary-expand {
+  position: absolute;
+  bottom: 0.05333rem;
+  right: 0.13333rem;
+  padding-left: 0.08rem;
+  background-color: #fff;
+  text-indent: 0;
+  font-size: 15px;
+}
+
+.video-summary-desc .summary-expand > em {
+  font-style: normal;
+}
+
+.video-summary-desc .summary-expand > span {
+  display: none;
+}
+
+.video-summary-desc .summary-expand.active > span {
+  display: block;
+}
+
+.video-summary-desc .summary-expand.active > em {
+  display: none;
 }
 
 .vote-button {
@@ -479,4 +549,72 @@ video {
   height: 0.37333rem;
   background: url("../assets/images/close.png") no-repeat;
   background-size: 100% auto;
+}
+
+.vd-vote-action {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  padding: 0.21333rem 0.2rem;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+}
+
+.commit-wrap {
+  -ms-flex: 1 1;
+      flex: 1 1;
+  background-color: #f0f0f0;
+  position: relative;
+  border-radius: 0.16rem;
+}
+
+.commit-wrap input {
+  width: 100%;
+  padding: 0.18667rem 0.2rem;
+  line-height: 1.5;
+  font-size: 14px;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.commit-info {
+  margin-right: 0.26667rem;
+}
+
+.commit-info > span {
+  position: relative;
+  display: inline-block;
+  width: 0.58667rem;
+  height: 0.58667rem;
+  margin-left: 0.26667rem;
+  margin-right: 0.4rem;
+}
+
+.commit-info > span:first-child {
+  background: url("../assets/images/message.svg") no-repeat;
+  background-size: 100% auto;
+}
+
+.commit-info > span:last-child {
+  background: url("../assets/images/star-gray.png") no-repeat;
+  background-size: 100% auto;
+}
+
+.commit-info > span:last-child.hl {
+  background: url("../assets/images/star.png") no-repeat;
+  background-size: 100% auto;
+}
+
+.commit-info > span > i {
+  position: absolute;
+  left: 110%;
+  top: -0.26667rem;
+  font-size: 15px;
+  font-style: normal;
+  color: #777;
 }
