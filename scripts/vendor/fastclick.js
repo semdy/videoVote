@@ -839,4 +839,5 @@
         window.FastClick = FastClick;
     }
 }());
+
 FastClick.attach(document.body);

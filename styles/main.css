@@ -289,7 +289,7 @@ video {
   display: none;
   background-color: #fff;
   min-height: 100%;
-  padding-top: 7rem;
+  padding-top: 1.4rem;
   padding-bottom: 1.6rem;
 }
 
@@ -311,14 +311,14 @@ video {
 }
 
 .video-container {
-  position: fixed;
+  /*position: fixed;
   left: 0;
-  top: 1.4rem;
+  top: 105px;*/
   width: 100%;
   height: 5.64rem;
   background-color: #f0f0f0;
   overflow: hidden;
-  z-index: 200;
+  /*z-index: 200;*/
 }
 
 .video-container video, .video-container iframe {
@@ -384,8 +384,6 @@ video {
 .vd-vote-item {
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-align: center;
-      align-items: center;
   padding: 0.26667rem 0.4rem;
 }
 
@@ -399,6 +397,7 @@ video {
   width: 1.2rem;
   height: 1.2rem;
   margin-right: 0.2rem;
+  margin-top: 0.06667rem;
   border-radius: 50%;
   vertical-align: middle;
 }
@@ -426,11 +425,45 @@ video {
   margin-right: 0.66667rem;
 }
 
+.video-summary-panel {
+  position: relative;
+  overflow: hidden;
+}
+
 .video-summary-panel > h4 {
   margin: 0 0 0.13333rem;
   font-size: 16px;
   color: #f0a83e;
   font-weight: normal;
+}
+
+.video-summary-panel .summary-expand {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 0.13333rem;
+  padding-bottom: 0.13333rem;
+  text-align: center;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.4)), to(rgba(255, 255, 255, 0.9)));
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.9));
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.9));
+  background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.9));
+}
+
+.video-summary-panel .summary-expand span {
+  display: inline-block;
+  width: 0.34667rem;
+  height: 0.34667rem;
+  background: url("../assets/images/arrow_down.png") no-repeat;
+  background-size: 100% auto;
+}
+
+.video-summary-panel .summary-expand.active {
+  background-image: none;
+  -webkit-transform: rotate(-180deg);
+      -ms-transform: rotate(-180deg);
+          transform: rotate(-180deg);
 }
 
 .video-summary-desc {
@@ -442,32 +475,6 @@ video {
 
 .video-summary-desc.expand {
   max-height: none;
-}
-
-.video-summary-desc .summary-expand {
-  position: absolute;
-  bottom: 0.05333rem;
-  right: 0.13333rem;
-  padding-left: 0.08rem;
-  background-color: #fff;
-  text-indent: 0;
-  font-size: 15px;
-}
-
-.video-summary-desc .summary-expand > em {
-  font-style: normal;
-}
-
-.video-summary-desc .summary-expand > span {
-  display: none;
-}
-
-.video-summary-desc .summary-expand.active > span {
-  display: block;
-}
-
-.video-summary-desc .summary-expand.active > em {
-  display: none;
 }
 
 .vote-button {
@@ -560,8 +567,16 @@ video {
   padding: 0.21333rem 0.2rem;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-align: center;
-      align-items: center;
+  z-index: 1000;
+}
+
+.vd-vote-action.focus .comment-pub {
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.vd-vote-action.focus .commit-info {
+  display: none;
 }
 
 .commit-wrap {
@@ -582,8 +597,25 @@ video {
   outline: none;
 }
 
+.comment-pub {
+  width: 20%;
+  display: none;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  color: #f0a83e;
+  font-size: 16px;
+}
+
 .commit-info {
-  margin-right: 0.26667rem;
+  width: 30%;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
 }
 
 .commit-info > span {
@@ -593,10 +625,11 @@ video {
   height: 0.58667rem;
   margin-left: 0.26667rem;
   margin-right: 0.4rem;
+  color: #777;
 }
 
 .commit-info > span:first-child {
-  background: url("../assets/images/message.svg") no-repeat;
+  background: url("../assets/images/message.png") no-repeat;
   background-size: 100% auto;
 }
 
@@ -605,16 +638,16 @@ video {
   background-size: 100% auto;
 }
 
-.commit-info > span:last-child.hl {
+.commit-info > span:last-child.disabled {
   background: url("../assets/images/star.png") no-repeat;
   background-size: 100% auto;
+  color: #f3961d;
 }
 
 .commit-info > span > i {
   position: absolute;
   left: 110%;
   top: -0.26667rem;
-  font-size: 15px;
+  font-size: 13px;
   font-style: normal;
-  color: #777;
 }
