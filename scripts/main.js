@@ -1,6 +1,6 @@
 ;(function (window, undefined) {
 
-  function formatDate (source, format) {
+  function formatDate(source, format) {
     var o = {
       'M+': source.getMonth() + 1, // 月份
       'd+': source.getDate(), // 日
@@ -9,7 +9,7 @@
       's+': source.getSeconds(), // 秒
       'q+': Math.floor((source.getMonth() + 3) / 3), // 季度
       'f+': source.getMilliseconds() // 毫秒
-    };
+    }
     if (/(y+)/.test(format)) {
       format = format.replace(RegExp.$1, (source.getFullYear() + '').substr(4 - RegExp.$1.length))
     }
@@ -22,24 +22,24 @@
   }
 
   var requestAnimationFrame =
-    window.requestAnimationFrame        ||
-    window.webkitRequestAnimationFrame  ||
-    window.mozRequestAnimationFrame     ||
+    window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
     function (callback) {
-      return setTimeout(callback, 1000 / 60);
-    };
+      return setTimeout(callback, 1000 / 60)
+    }
 
   var cancelAnimationFrame =
-    window.cancelAnimationFrame        ||
-    window.webkitCancelAnimationFrame  ||
-    window.mozCancelAnimationFrame     ||
+    window.cancelAnimationFrame ||
+    window.webkitCancelAnimationFrame ||
+    window.mozCancelAnimationFrame ||
     function (id) {
-      return clearTimeout(id);
-    };
+      return clearTimeout(id)
+    }
 
   var Circular = {
     Out: function (k) {
-      return Math.sqrt(1 - (--k * k));
+      return Math.sqrt(1 - (--k * k))
     }
   }
 
@@ -69,22 +69,23 @@
     document.body.scrollTop = document.documentElement.scrollTop = top
   }
 
-  function getDocScrollHeight () {
+  function getDocScrollHeight() {
     return document.body.scrollHeight || document.documentElement.scrollHeight
   }
 
   function getQueryString(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-    var r = window.location.search.substr(1).match(reg);
-    if (r !== null) return unescape(r[2]); return null;
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i")
+    var r = window.location.search.substr(1).match(reg)
+    if (r !== null) return unescape(r[2])
+    return null
   }
 
   function tpl(str, data) {
     return str.replace(/\{\{([^}}]+)\}\}/gm, function (match, name) {
-       if (data[name] !== undefined) {
-         return data[name]
-       }
-       return ''
+      if (data[name] !== undefined) {
+        return data[name]
+      }
+      return ''
     })
   }
 
@@ -165,22 +166,22 @@
       this.page.find('.list-tab-item').eq(sessionStorage.__from === 'bill' ? 1 : 0).trigger('click')
       sessionStorage.removeItem('__from')
       this.bindScroll()
-      this.inited = true;
+      this.inited = true
     },
     bindScroll: function () {
       var self = this
       $(window).on('scroll.appendlist', function () {
         self.lastScrollTop = window.pageYOffset
-        if (window.pageYOffset + window.innerHeight === getDocScrollHeight() ) {
+        if (window.pageYOffset + window.innerHeight === getDocScrollHeight()) {
           self.showVideos(true)
         }
       })
     },
     dispose: function () {
       this.page.hide()
-       /* .off('click')
-        .find('.vote-videos').off('shown', this.showVideos)
-        .find('.videos-bill').off('shown', this.showBill)*/
+      /* .off('click')
+       .find('.vote-videos').off('shown', this.showVideos)
+       .find('.videos-bill').off('shown', this.showBill)*/
       $(window).off('scroll.appendlist')
     },
     showVideos: function (isAppend) {
@@ -194,19 +195,19 @@
         '      </div>' +
         '    </div>'
       $.post(serverUrl + '/video/videoList', {openId: openId, page: pageList.pageNum, limit: 10}).then(function (res) {
-         if (res.success) {
-           if (res.data.docs.length > 0) {
-             pageList.pageNum++
-             var videoList = buildVideoList(videoItemTpl, res.data.docs)
-             if (!isAppend) {
-               $('#video-list').find('.vote-videos').html(videoList)
-             } else {
-               $('#video-list').find('.vote-videos').append(videoList)
-             }
-           }
-         } else {
-           alert(res.message)
-         }
+        if (res.success) {
+          if (res.data.docs.length > 0) {
+            pageList.pageNum++
+            var videoList = buildVideoList(videoItemTpl, res.data.docs)
+            if (!isAppend) {
+              $('#video-list').find('.vote-videos').html(videoList)
+            } else {
+              $('#video-list').find('.vote-videos').append(videoList)
+            }
+          }
+        } else {
+          alert(res.message)
+        }
       })
     },
     showBill: function () {
@@ -285,7 +286,7 @@
         $('#video-desc').toggleClass('expand')
         $(this).toggleClass('active')
       }).on('click', '[data-action="comment"]', function () {
-        var top = $('#comments').offset().top - self.page.find('.index-header').height();
+        var top = $('#comments').offset().top - self.page.find('.index-header').height()
         setScrollTop(top)
       }).on('click', '[data-action="comment-pub"]', function () {
         $('#comment-form').submit()
@@ -306,8 +307,8 @@
         }, 200)
       })
 
-      $(window).on('scroll.appendcomment', function () {console.log(2233)
-        if (window.pageYOffset + window.innerHeight === getDocScrollHeight() ) {
+      $(window).on('scroll.appendcomment', function () {
+        if (window.pageYOffset + window.innerHeight === getDocScrollHeight()) {
           self.getComments(vid, true)
         }
       })
@@ -351,7 +352,10 @@
       $.post(serverUrl + '/video/videoDetail', {videoId: vid, openId: openId}).then(function (res) {
         if (res.success) {
           document.title = res.data.title
-          var detail = tpl(detailTpl, $.extend(res.data, {disabledCls: !res.data.isVote ? 'disabled' : '', expandShow: res.data.detail.length > 60 ? 'block' : 'none'}))
+          var detail = tpl(detailTpl, $.extend(res.data, {
+            disabledCls: !res.data.isVote ? 'disabled' : '',
+            expandShow: res.data.detail.length > 60 ? 'block' : 'none'
+          }))
           self.page.find('.detail-wrapper').html(detail)
           self.getComments(vid)
           self.setVideoSize()
@@ -362,7 +366,7 @@
     },
     getComments: function (vid, isAppend, refresh) {
       var self = this
-      var ItemTpl =  '<div class="vd-vote-item">' +
+      var ItemTpl = '<div class="vd-vote-item">' +
         '          <div class="vd-vote-user">' +
         '            <img src="{{headImg}}" class="vote-avatar" alt="{{name}}">' +
         '          </div>' +
@@ -377,11 +381,15 @@
       if (refresh) {
         pageDetail.pageNum = 1
       }
-      $.post(serverUrl + '/comment/getComment', {videoId: vid, page: pageDetail.pageNum, limit: 20}).then(function (res) {
+      $.post(serverUrl + '/comment/getComment', {
+        videoId: vid,
+        page: pageDetail.pageNum,
+        limit: 20
+      }).then(function (res) {
         if (res.success) {
           if (res.data.docs.length > 0) {
             pageDetail.pageNum++
-            var ret = '';
+            var ret = ''
             res.data.docs.forEach(function (item) {
               ret += tpl(ItemTpl, item)
             })
@@ -411,13 +419,17 @@
       })
 
       $form.off('submit').on('submit', function (e) {
-        e.preventDefault();
-        var that = this;
+        e.preventDefault()
+        var that = this
         var comment = this.comment.value
         if ($.trim(comment) === '') {
           return alert('请输入有效的评论')
         }
-        $.post(serverUrl + '/comment/addComment', {openId: openId, videoId: vid, comment: comment}).then(function (res) {
+        $.post(serverUrl + '/comment/addComment', {
+          openId: openId,
+          videoId: vid,
+          comment: comment
+        }).then(function (res) {
           if (res.success) {
             that.comment.value = ''
             that.comment.blur()
@@ -440,7 +452,7 @@
       })
     },
     setVideoSize: function () {
-      this.page.find('.video-container').height(423*window.innerWidth/750)
+      this.page.find('.video-container').height(423 * window.innerWidth / 750)
     },
     showModal: function () {
       this.page.find('.vote-modal').show().one('click', function () {
@@ -485,7 +497,7 @@
         pageDetail.init(hashParams)
         break
       default:
-        //
+      //
     }
     lastPath = hashKey
     //setScrollTop(0)
@@ -500,4 +512,4 @@
     main()
   })
 
-})(window);
+})(window)
